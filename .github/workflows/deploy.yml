@@ -71,7 +71,7 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f deployment.yml
-        kubectl apply -f service.yml
+        kubectl apply -f Deployment.yml
+        kubectl apply -f Service.yml
       env:
         KUBECONFIG: $HOME/.kube/config
