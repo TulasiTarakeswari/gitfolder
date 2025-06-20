@@ -4,3 +4,9 @@ kubeconfig.b64
 kubeconfig.b64
 kubeconfig.b64
 kubeconfig.b64
+target/
+actions-runner/
+*.tar.gz
+*.jar
+.minikube/
+*.iso
