@@ -3,7 +3,7 @@ name: CD - Deploy to Minikube
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 jobs:
   deploy:
