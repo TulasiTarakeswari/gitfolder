@@ -51,6 +51,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
+    env:
+      KUBECONFIG: $HOME/.kube/config
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -68,9 +71,9 @@ jobs:
           mv kubeconfig $HOME/.kube/config
 
       - name: Verify Cluster Access
-        run: kubectl get nodes --kubeconfig=$HOME/.kube/config
+        run: kubectl get nodes
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f Deployment.yml --kubeconfig=$HOME/.kube/config
-          kubectl apply -f Service.yml --kubeconfig=$HOME/.kube/config
+          kubectl apply -f Deployment.yml
+          kubectl apply -f Service.yml
