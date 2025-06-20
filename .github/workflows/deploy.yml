@@ -10,7 +10,6 @@ jobs:
     name: 🛠️ Build Java App & Push Docker Image
     runs-on: self-hosted
 
-
     steps:
       - name: 📦 Checkout Code
         uses: actions/checkout@v3
