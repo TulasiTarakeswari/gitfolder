@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: 🛠️ Build Java App & Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: 📦 Checkout Code
