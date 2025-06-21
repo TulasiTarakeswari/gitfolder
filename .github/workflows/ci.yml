@@ -1,10 +1,29 @@
-name: my first ci pipeline
-on: [push]
+name: CI - Build and Upload Artifact
+
+on:
+  push:
+    branches:
+      - master
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # GitHub-hosted runner
+
     steps:
-      - name: checkoutcode
+      - name: Checkout Code
         uses: actions/checkout@v3
-      - name: print hello
-        run: echo "print hello from github actions"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Upload Jar Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app
+          path: target/*.jar
