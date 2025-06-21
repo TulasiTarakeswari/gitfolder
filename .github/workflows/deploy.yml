@@ -1,35 +1,31 @@
-name: CD - Deploy to Minikube
+deploy:
+  name: Deploy to Minikube
+  needs: build
+  runs-on: self-hosted
 
-on:
-  workflow_run:
-    workflows: ["CI - Build and Upload Artifact"]
-    types:
-      - completed
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-jobs:
-  deploy:
-    runs-on: self-hosted  # Your WSL2 runner
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Build again locally (avoid artifact download)
+      run: mvn clean install
 
-      - name: Download Jar Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
-          path: target
+    - name: Set up Kubeconfig for Minikube
+      run: |
+        echo "${{ secrets.KUBECONFIG_DATA }}" | base64 -d > kubeconfig
+        mkdir -p $HOME/.kube
+        mv kubeconfig $HOME/.kube/config
 
-      - name: Set up Kubeconfig
-        run: |
-          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 -d > kubeconfig
-          mkdir -p $HOME/.kube
-          mv kubeconfig $HOME/.kube/config
+    - name: Verify Cluster Access
+      run: kubectl get nodes --kubeconfig=$HOME/.kube/config
 
-      - name: Verify Cluster Access
-        run: kubectl get nodes
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f Deployment.yml
-          kubectl apply -f Service.yml
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f Deployment.yml --kubeconfig=$HOME/.kube/config
+        kubectl apply -f Service.yml --kubeconfig=$HOME/.kube/config
